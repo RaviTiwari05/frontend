@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react'; 
+import { useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState(''); 
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
         console.log('Submitting email:', email, 'and password:', password);
+
+        
+        navigate('/home');
     };
 
     return (
@@ -20,13 +23,10 @@ function LoginPage() {
 
                 <form onSubmit={handleSubmit} className="text-center">
                     <div className="mb-4">
-                        <label htmlFor="email" className="block text-gray-700 font-bold mb-2">
-                            Email address
-                        </label>
+                        <label htmlFor="email" className="block text-gray-700 font-bold mb-2">Email address</label>
                         <input
                             type="email"
                             id="email"
-                            name="email" 
                             placeholder="Enter your email address"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -36,13 +36,10 @@ function LoginPage() {
                     </div>
 
                     <div className="mb-4">
-                        <label htmlFor="password" className="block text-gray-700 font-bold mb-2">
-                            Password
-                        </label>
+                        <label htmlFor="password" className="block text-gray-700 font-bold mb-2">Password</label>
                         <input
-                            type="password" 
+                            type="password"
                             id="password"
-                            name="password" 
                             placeholder="Enter your password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -51,10 +48,7 @@ function LoginPage() {
                         />
                     </div>
 
-                    <button
-                        type="submit"
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
-                    >
+                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
                         Continue
                     </button>
                 </form>
