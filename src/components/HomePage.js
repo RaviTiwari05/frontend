@@ -6,52 +6,52 @@ function HomePage() {
     const [filteredResults, setFilteredResults] = useState([]);
     const [users, setUsers] = useState([]);
 
-    // Mock data for announcements and users
+    const [announcementText, setAnnouncementText] = useState('');
+    const [announcementDepartment, setAnnouncementDepartment] = useState('');
+    const [announcementUserName, setAnnouncementUserName] = useState('');
+
     useEffect(() => {
         const fetchAnnouncements = async () => {
             const announcementsData = [
-                { id: 1, text: "New lab timings updated.", department: "Civil Engineering", userName: "Ananth" },
-                { id: 2, text: "Campus fest next week!", department: "Cultural Fest", userName: "Alok" },
-                { id: 3, text: "Online classes on Monday.", department: "Computer Science", userName: "Mayank Pandey" }
+                { id: 1, text: "New class timings.", department: "Civil Engineering", userName: "Ananth" },
+                { id: 2, text: "Campus fest in nov!", department: "Cultural Fest", userName: "Alok" },
+                { id: 3, text: "Online classe on saturday.", department: "Computer Science", userName: "Mayank Pandey" }
             ];
             setAnnouncements(announcementsData);
-
-            const usersData = [
-                { id: 1, name: "Ananth", department: "Civil Engineering" },
-                { id: 2, name: "Alok", department: "Cultural Fest" },
-                { id: 3, name: "Mayank Pandey", department: "Computer Science" }
-            ];
-            setUsers(usersData);
-
-            // Initialize filtered results with all announcements
             setFilteredResults(announcementsData);
         };
         fetchAnnouncements();
     }, []);
 
-    // Handle search functionality
     useEffect(() => {
         if (searchQuery) {
             const lowercasedQuery = searchQuery.toLowerCase();
-            const results = [
-                ...announcements.filter(
-                    (announcement) =>
-                        announcement.text.toLowerCase().includes(lowercasedQuery) ||
-                        announcement.department.toLowerCase().includes(lowercasedQuery) ||
-                        announcement.userName.toLowerCase().includes(lowercasedQuery)
-                ),
-                ...users.filter(
-                    (user) =>
-                        user.name.toLowerCase().includes(lowercasedQuery) ||
-                        user.department.toLowerCase().includes(lowercasedQuery)
-                )
-            ];
+            const results = announcements.filter(
+                (announcement) =>
+                    announcement.text.toLowerCase().includes(lowercasedQuery) ||
+                    announcement.department.toLowerCase().includes(lowercasedQuery) ||
+                    announcement.userName.toLowerCase().includes(lowercasedQuery)
+            );
             setFilteredResults(results);
         } else {
-            // Reset to only announcements if no search query
             setFilteredResults(announcements);
         }
-    }, [searchQuery, announcements, users]);
+    }, [searchQuery, announcements]);
+
+    const handleAnnouncementSubmit = (e) => {
+        e.preventDefault();
+        const newAnnouncement = {
+            id: announcements.length + 1,
+            text: announcementText,
+            department: announcementDepartment,
+            userName: announcementUserName,
+        };
+        setAnnouncements([newAnnouncement, ...announcements]);
+        setFilteredResults([newAnnouncement, ...filteredResults]);
+        setAnnouncementText('');
+        setAnnouncementDepartment('');
+        setAnnouncementUserName('');
+    };
 
     return (
         <div className="bg-blue-50 min-h-screen flex flex-col">
@@ -72,9 +72,8 @@ function HomePage() {
                             placeholder="Search announcements or users..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="border border-gray-300 rounded-md px-3 py-1 w-64 focus:outline-none focus:border-blue-500"
+                            className="border border-gray-300 rounded-md px-3 py-1 w-96 focus:outline-none focus:border-blue-500"
                         />
-                        <a href="#announcement-form" className="text-gray-800 font-medium">Make Announcement</a>
                         <a href="#profile" className="text-gray-800 font-medium">My Profile</a>
                     </div>
                 </nav>
@@ -83,6 +82,43 @@ function HomePage() {
             {/* Welcome Message */}
             <main className="flex-grow p-6">
                 <h1 className="text-5xl font-bold text-center text-blue-700 mb-8">Welcome to Smart Campus Connect!</h1>
+
+                {/* Announcement Form */}
+                <section id="announcement-form" className="my-8 p-6 bg-white shadow rounded">
+                    <h2 className="text-2xl font-semibold mb-4">Make a New Announcement</h2>
+                    <form onSubmit={handleAnnouncementSubmit} className="space-y-4">
+                        <input
+                            type="text"
+                            placeholder="Announcement Text"
+                            value={announcementText}
+                            onChange={(e) => setAnnouncementText(e.target.value)}
+                            className="border border-gray-300 rounded-md px-4 py-2 w-full focus:outline-none focus:border-blue-500"
+                            required
+                        />
+                        <input
+                            type="text"
+                            placeholder="Department"
+                            value={announcementDepartment}
+                            onChange={(e) => setAnnouncementDepartment(e.target.value)}
+                            className="border border-gray-300 rounded-md px-4 py-2 w-full focus:outline-none focus:border-blue-500"
+                            required
+                        />
+                        <input
+                            type="text"
+                            placeholder="Your Name"
+                            value={announcementUserName}
+                            onChange={(e) => setAnnouncementUserName(e.target.value)}
+                            className="border border-gray-300 rounded-md px-4 py-2 w-full focus:outline-none focus:border-blue-500"
+                            required
+                        />
+                        <button
+                            type="submit"
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        >
+                            Post Announcement
+                        </button>
+                    </form>
+                </section>
 
                 {/* Announcements Feed */}
                 <section id="announcements" className="my-8">
